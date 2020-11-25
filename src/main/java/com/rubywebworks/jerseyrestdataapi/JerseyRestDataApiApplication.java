@@ -2,6 +2,7 @@ package com.rubywebworks.jerseyrestdataapi;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -55,7 +56,8 @@ public class JerseyRestDataApiApplication {
    */
   @GET
   @Produces(MediaType.TEXT_PLAIN)
-  public String getIt() {
-    return "Got it!";
+  @Path("{name}")
+  public String getGreeting(@PathParam(value = "name") String aName) {
+    return "Good Morning " + aName;
   }
 }
