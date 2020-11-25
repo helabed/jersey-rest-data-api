@@ -12,36 +12,38 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
- * Root resource (exposed at "myresource" path)
+ * Root resource (exposed at "test" path)
  */
-@Path("/myresource")
+@Path("/test")
 public class JerseyRestDataApiApplication {
+
   public static void main(String[] args) {
 
-    Server server = new Server(8080);
-
-    ServletContextHandler ctx =
+    ServletContextHandler context =
       new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
 
-    ctx.setContextPath("/");
-    server.setHandler(ctx);
+    context.setContextPath("/");
 
-    ServletHolder serHol = ctx.addServlet(ServletContainer.class, "/rest/*");
-    serHol.setInitOrder(1);
-    serHol.setInitParameter("jersey.config.server.provider.packages",
-            "com.rubywebworks.jerseyrestdataapi");
+    Server jettyServer = new Server(8080);
+    jettyServer.setHandler(context);
+
+    ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/api/*");
+    jerseyServlet.setInitOrder(1);
+    jerseyServlet.setInitParameter(
+      "jersey.config.server.provider.packages",
+      "com.rubywebworks.jerseyrestdataapi");
 
     try {
-        server.start();
-        server.join();
+      jettyServer.start();
+      jettyServer.join();
     } catch (Exception ex) {
-        Logger.getLogger(
-          JerseyRestDataApiApplication.class.getName()).
-            log(Level.SEVERE, null, ex);
-        System.out.println(ex);
+      Logger.getLogger(
+        JerseyRestDataApiApplication.class.getName()).log(Level.SEVERE, null, ex);
+      System.out.println(ex);
     } finally {
-        server.destroy();
+        jettyServer.destroy();
     }
   }
 
