@@ -11,6 +11,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,6 +59,6 @@ public class JerseyRestDataApiApplication {
   @Produces(MediaType.TEXT_PLAIN)
   @Path("{name}")
   public String getGreeting(@PathParam(value = "name") String aName) {
-    return "Good Morning " + aName;
+    return "Good Morning " + aName + ", The time now is: " + LocalDateTime.now();
   }
 }
