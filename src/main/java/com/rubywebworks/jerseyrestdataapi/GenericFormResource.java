@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 /**
@@ -76,8 +77,16 @@ public class GenericFormResource {
       @FormParam("name") String name,
       @FormParam("id") String id) {
         return
-          "Add User:" +
+          "\nAdd User:" +
             "\nId: "   + id +
-            "\nName: " + name;
+            "\nName: " + name + "\n\n";
+  }
+
+  @POST
+  @Path("addUserData")
+  @Produces(MediaType.TEXT_PLAIN)
+  // curl -X POST -d "name=John&id=100" http://localhost:8080/api/forms/addUserData
+  public String addUser(MultivaluedMap<String, String> formData) {
+      return "\nForm Data: \n" + formData + "\n\n";
   }
 }
