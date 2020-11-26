@@ -1,6 +1,7 @@
 package com.rubywebworks.jerseyrestdataapi;
 
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -88,5 +89,12 @@ public class GenericFormResource {
   // curl -X POST -d "name=John&id=100" http://localhost:8080/api/forms/addUserData
   public String addUser(MultivaluedMap<String, String> formData) {
       return "\nForm Data: \n" + formData + "\n\n";
+  }
+
+  @GET
+  @Path("getUserDetails/{id}")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getUser(@BeanParam UserBean userBean) {
+    return "\n\nUser Bean: " + userBean.toString() + "\n\n";
   }
 }
