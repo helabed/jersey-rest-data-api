@@ -3,9 +3,11 @@ package com.rubywebworks.jerseyrestdataapi;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.MatrixParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -64,5 +66,18 @@ public class GenericFormResource {
     } else {
      return "userAgentCookie is null";
     }
+  }
+
+  @POST
+  @Produces(MediaType.TEXT_PLAIN)
+  @Path("addUser")
+  // curl -X POST -d "name=John&id=100" http://localhost:8080/api/forms/addUser
+  public String addUser(
+      @FormParam("name") String name,
+      @FormParam("id") String id) {
+        return
+          "Add User:" +
+            "\nId: "   + id +
+            "\nName: " + name;
   }
 }

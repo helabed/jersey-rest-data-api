@@ -1,5 +1,13 @@
 package com.rubywebworks.jerseyrestdataapi;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -11,10 +19,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Root resource (exposed at "test" path)
  */
@@ -22,6 +26,9 @@ import java.util.logging.Logger;
 public class JerseyRestDataApiApplication {
 
   public static void main(String[] args) {
+    setLoggingLevel();
+    displaySortedSystemProperties();
+    displaySortedEnvironmentVars();
 
     ServletContextHandler context =
       new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
@@ -47,6 +54,40 @@ public class JerseyRestDataApiApplication {
     } finally {
         jettyServer.destroy();
     }
+  }
+
+  private static void displaySortedEnvironmentVars() {
+    System.out.println("----------------Display Sorted System Environment Vars-------------------");
+    Map<String, String> env = System.getenv();
+
+    LinkedHashMap<String, String> collectEnv =
+        env.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+    collectEnv.forEach((k, v) -> System.out.println(k + ":  " + v));
+    System.out.println("----------------Display Sorted System Environment Vars-------------------");
+  }
+
+  private static void displaySortedSystemProperties() {
+    System.out.println("----------------Display Sorted System Props-------------------");
+    Properties properties = System.getProperties();
+    // Thanks Java 8
+    LinkedHashMap<String, String> collect = properties.entrySet().stream()
+        .collect(Collectors.toMap(k -> (String) k.getKey(), e -> (String) e.getValue()))
+        .entrySet().stream().sorted(Map.Entry.comparingByKey())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+    collect.forEach((k, v) -> System.out.println(k + ":  " + v));
+    System.out.println("----------------Display Sorted System Props-------------------");
+  }
+
+  private static void setLoggingLevel() {
+    System.out.println("------------------Setting Log Level-------------------");
+    System.setProperty("org.eclipse.jetty.util.log.class", "org.eclipse.jetty.util.log.StdErrLog");
+    System.setProperty("org.eclipse.jetty.LEVEL", "INFO");
   }
 
   /**
