@@ -30,15 +30,15 @@ public class JerseyRestDataApiApplication {
     displaySortedSystemProperties();
     displaySortedEnvironmentVars();
 
-    ServletContextHandler context =
+    ServletContextHandler jettyContext =
       new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
 
-    context.setContextPath("/");
+    jettyContext.setContextPath("/");
 
     Server jettyServer = new Server(8080);
-    jettyServer.setHandler(context);
+    jettyServer.setHandler(jettyContext);
 
-    ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/api/*");
+    ServletHolder jerseyServlet = jettyContext.addServlet(ServletContainer.class, "/api/*");
     jerseyServlet.setInitOrder(1);
     jerseyServlet.setInitParameter(
       "jersey.config.server.provider.packages",
