@@ -94,6 +94,7 @@ public class GenericFormResource {
   @GET
   @Path("getUserDetails/{id}")
   @Produces(MediaType.TEXT_PLAIN)
+  // /api/forms/getUserDetails/1;name=John;age=25?address=USA
   public String getUser(@BeanParam UserBean userBean) {
     return "\n\nUser Bean: " + userBean.toString() + "\n\n";
   }
