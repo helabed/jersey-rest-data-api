@@ -102,5 +102,5 @@ public class Product {
       "\nPrice: "       + this.price +
       "\nCreated at: "  + this.created_at +
       "\nUpdated at: "  + this.updated_at + "\n\n";
-    }
+  }
 }

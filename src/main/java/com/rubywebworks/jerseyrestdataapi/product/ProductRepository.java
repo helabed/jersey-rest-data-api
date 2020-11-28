@@ -12,27 +12,23 @@ public class ProductRepository {
   private static ProductRepository instance;
   private static Connection dbConnection;
 
-  private ProductRepository()
-  {
+  private ProductRepository() {
     // Constructor hidden because this is a singleton
     // use ProductRepository.getInstance() instead of 'new ProductRepository'
   }
 
-  public static ProductRepository getInstance()
-  {
-    if (instance == null)
-    {
-        // Create the instance
-        instance = new ProductRepository();
-        String url = "jdbc:postgresql://localhost:5432/depot_development";
-        try {
-          Class.forName("org.postgresql.Driver");
-          dbConnection = DriverManager.getConnection(url);
-        } catch (Exception e) {
-       System.out.println(e.getMessage());
+  public static ProductRepository getInstance() {
+    if (instance == null) {
+      // Create the instance
+      instance = new ProductRepository();
+      String url = "jdbc:postgresql://localhost:5432/depot_development";
+      try {
+        Class.forName("org.postgresql.Driver");
+        dbConnection = DriverManager.getConnection(url);
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
-    }
-    // Return the instance
     return instance;
   }
 
@@ -44,16 +40,15 @@ public class ProductRepository {
       Statement st = dbConnection.createStatement();
       ResultSet rs = st.executeQuery(sql);
       while(rs.next()) {
-          Product p = new Product();
-      p.setId(rs.getLong(1));
-      p.setTitle(rs.getString(2));
-      p.setDescription(rs.getString(3));
-      p.setImage_url(rs.getString(4));
-      p.setPrice(rs.getBigDecimal(5));
-      p.setCreated_at(rs.getTimestamp(6));
-      p.setUpdated_at(rs.getTimestamp(7));
-      products.add(p);
-
+        Product p = new Product();
+        p.setId(rs.getLong(1));
+        p.setTitle(rs.getString(2));
+        p.setDescription(rs.getString(3));
+        p.setImage_url(rs.getString(4));
+        p.setPrice(rs.getBigDecimal(5));
+        p.setCreated_at(rs.getTimestamp(6));
+        p.setUpdated_at(rs.getTimestamp(7));
+        products.add(p);
       }
     } catch (Exception e) {
         System.out.println(e.getMessage());
@@ -113,7 +108,7 @@ public class ProductRepository {
       st.setLong(1, id);
       st.executeUpdate();
     } catch (Exception e) {
-        System.out.println(e.getMessage());
+      System.out.println(e.getMessage());
     }
   }
 

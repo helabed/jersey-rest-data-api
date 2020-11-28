@@ -4,25 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService {
-  private ProductRepository productRepository =
-    ProductRepository.getInstance();
 
+  private ProductRepository productRepository = ProductRepository.getInstance();
   private static ProductService instance;
 
-  private ProductService()
-  {
+  private ProductService() {
     // Constructor hidden because this is a singleton
     // use ProductService.getInstance() instead of 'new ProductService'
   }
 
-  public static ProductService getInstance()
-  {
-    if (instance == null)
-    {
-        // Create the instance
+  public static ProductService getInstance() {
+    if (instance == null) {
         instance = new ProductService();
     }
-    // Return the instance
     return instance;
   }
 

@@ -36,7 +36,7 @@ public class ProductController {
     return productService.getProduct(id);
   }
 
-  // Example of a curl command to produce a POST
+  // Example of a curl command to produce a POST - i.e to create a record
   // curl -X POST  -H "Content-type: application/json" -d\
   //  "{\"id\":104,\"title\":\"Ruby on Rails\",\"description\":\"Introduction to Rails\"\
   //  ,\"price\":12.6,\"image_url\":\"oranges.jpg\",\"created_at\":\"2020-11-16T23:23:24.601-06:00\"\
@@ -47,7 +47,7 @@ public class ProductController {
     productService.addProduct(product);
   }
 
-  // Example of a curl command to produce a PUT
+  // Example of a curl command to produce a PUT - i.e to update a record
   // curl -X PUT -H "Accept: text/json" -H "Content-type: application/json" -d \
   //  "{\"id\":104,\"title\":\"Ruby on Rails\",\"description\":\"Introduction to Rails\"\
   //  ,\"price\":12.6,\"image_url\":\"oranges.jpg\",\"created_at\":\"2020-11-16T23:23:24.601-06:00\"\
