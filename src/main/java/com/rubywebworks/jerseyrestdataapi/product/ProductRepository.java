@@ -81,19 +81,20 @@ public class ProductRepository {
 
   public Product findById(Long id) {
     Product p = new Product();
-    String sql = "select * from products where id="+id;
+    String sql = "select * from products where id=?";
     try {
-      Statement st = dbConnection.createStatement();
-      ResultSet rs = st.executeQuery(sql);
+      PreparedStatement st = dbConnection.prepareStatement(sql);
+      st.setLong(1, id);
+      ResultSet rs = st.executeQuery();
       if(rs.next()) {
-      p.setId(rs.getLong(1));
-      p.setTitle(rs.getString(2));
-      p.setDescription(rs.getString(3));
-      p.setImage_url(rs.getString(4));
-      p.setPrice(rs.getBigDecimal(5));
-      p.setCreated_at(rs.getTimestamp(6));
-      p.setUpdated_at(rs.getTimestamp(7));
-      System.out.println(p);
+        p.setId(rs.getLong(1));
+        p.setTitle(rs.getString(2));
+        p.setDescription(rs.getString(3));
+        p.setImage_url(rs.getString(4));
+        p.setPrice(rs.getBigDecimal(5));
+        p.setCreated_at(rs.getTimestamp(6));
+        p.setUpdated_at(rs.getTimestamp(7));
+        System.out.println(p);
       }
     } catch (Exception e) {
         System.out.println(e.getMessage());
