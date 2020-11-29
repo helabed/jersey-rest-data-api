@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ProductRepository {
 
@@ -71,8 +73,10 @@ public class ProductRepository {
       st.setString(    3, product.getDescription());
       st.setString(    4, product.getImage_url());
       st.setBigDecimal(5, product.getPrice());
-      st.setTimestamp( 6, product.getCreated_at());
-      st.setTimestamp( 7, product.getUpdated_at());
+      Timestamp ts = new Timestamp(new Date().getTime());
+
+      st.setTimestamp( 6, ts);
+      st.setTimestamp( 7, ts);
 
       st.executeUpdate();
     } catch (Exception e) {
@@ -151,19 +155,19 @@ public class ProductRepository {
       }
 
       if( product.getCreated_at() != null) {
-        st.setTimestamp( 5, product.getCreated_at());
+        // ignore new created_at value, use old DB value.
+        st.setTimestamp( 5, oldProduct.getCreated_at());
       } else {
         st.setTimestamp( 5, oldProduct.getCreated_at());
       }
 
-      if( product.getUpdated_at() != null) {
-        st.setTimestamp( 6, product.getUpdated_at());
-      } else {
-        st.setTimestamp( 6, oldProduct.getUpdated_at());
-      }
+      Timestamp ts = new Timestamp(new Date().getTime());
+        // ignore new updated_at value, use a Timestamp of now.
+      st.setTimestamp( 6, ts);
 
       // setting WHERE clause
-      st.setLong(      7, product.getId());
+      // use the id key from URL path and not what is provided in body of PUT (i.e not product.id)
+      st.setLong(      7, id);
 
       st.executeUpdate();
     } catch (Exception e) {
