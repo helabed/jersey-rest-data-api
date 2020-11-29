@@ -37,7 +37,7 @@ public class ProductRepository {
   public Iterable<Product> findAll() {
     ArrayList<Product> products = new ArrayList<Product>();
 
-    String sql = "select * from products";
+    String sql = "select * from products order by id DESC";
     try {
       Statement st = dbConnection.createStatement();
       ResultSet rs = st.executeQuery(sql);
