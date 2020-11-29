@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -38,9 +39,11 @@ public class ProductRepository {
     ArrayList<Product> products = new ArrayList<Product>();
 
     String sql = "select * from products order by id DESC";
+    Statement st = null;
+    ResultSet rs = null;
     try {
-      Statement st = dbConnection.createStatement();
-      ResultSet rs = st.executeQuery(sql);
+      st = dbConnection.createStatement();
+      rs = st.executeQuery(sql);
       while(rs.next()) {
         Product p = new Product();
         p.setId(rs.getLong(1));
@@ -53,7 +56,9 @@ public class ProductRepository {
         products.add(p);
       }
     } catch (Exception e) {
-        System.out.println("Exception: " + e.getMessage());
+      System.out.println("Exception: " + e.getMessage());
+    } finally {
+      sqlCleanup(st, rs);
     }
     return products;
   }
@@ -62,11 +67,12 @@ public class ProductRepository {
     System.out.println("INSERT product...");
     System.out.println(product);
 
+    PreparedStatement st = null;
     String sql = "insert into products "
         + " (id, title, description, image_url, price, created_at, updated_at)"
         + " values (?,?,?,?,?,?,?)";
     try {
-      PreparedStatement st = dbConnection.prepareStatement(sql);
+      st = dbConnection.prepareStatement(sql);
 
       st.setLong(      1, product.getId());
       st.setString(    2, product.getTitle());
@@ -80,17 +86,21 @@ public class ProductRepository {
 
       st.executeUpdate();
     } catch (Exception e) {
-        System.out.println("Exception: " + e.getMessage());
+      System.out.println("Exception: " + e.getMessage());
+    } finally {
+      sqlCleanup(st);
     }
   }
 
   public Product findById(Long id) {
     Product p = new Product();
     String sql = "select * from products where id=?";
+    PreparedStatement st = null;
+    ResultSet rs = null;
     try {
-      PreparedStatement st = dbConnection.prepareStatement(sql);
+      st = dbConnection.prepareStatement(sql);
       st.setLong(1, id);
-      ResultSet rs = st.executeQuery();
+      rs = st.executeQuery();
       if(rs.next()) {
         p.setId(rs.getLong(1));
         p.setTitle(rs.getString(2));
@@ -102,19 +112,24 @@ public class ProductRepository {
         System.out.println(p);
       }
     } catch (Exception e) {
-        System.out.println("Exception: " + e.getMessage());
+      System.out.println("Exception: " + e.getMessage());
+    } finally {
+      sqlCleanup(st, rs);
     }
     return p;
   }
 
   public void deleteById(Long id) {
     String sql = "delete from products where id=?";
+    PreparedStatement st = null;
     try {
-      PreparedStatement st = dbConnection.prepareStatement(sql);
+      st = dbConnection.prepareStatement(sql);
       st.setLong(1, id);
       st.executeUpdate();
     } catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
+    } finally {
+      sqlCleanup(st);
     }
   }
 
@@ -126,8 +141,9 @@ public class ProductRepository {
         + " set title=?, description=?, image_url=?,"
         + "     price=?, created_at=?, updated_at=?"
         + " where id=?";
+    PreparedStatement st = null;
     try {
-      PreparedStatement st = dbConnection.prepareStatement(sql);
+      st = dbConnection.prepareStatement(sql);
       Product oldProduct = findById(id);
 
       if( product.getTitle() != null) {
@@ -172,6 +188,26 @@ public class ProductRepository {
       st.executeUpdate();
     } catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
+    } finally {
+      sqlCleanup(st);
+    }
+  }
+
+  private void sqlCleanup(Statement st, ResultSet rs) {
+    if (rs != null) {
+      try { rs.close(); }
+      catch (SQLException e) { } // ignore
+    }
+    if (st != null) {
+      try { st.close(); }
+      catch (SQLException e) { } // ignore
+    }
+  }
+
+  private void sqlCleanup(Statement st) {
+    if (st != null) {
+      try { st.close(); }
+      catch (SQLException e) { } // ignore
     }
   }
 }
