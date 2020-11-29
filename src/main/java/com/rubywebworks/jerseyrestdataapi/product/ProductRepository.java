@@ -26,7 +26,7 @@ public class ProductRepository {
         Class.forName("org.postgresql.Driver");
         dbConnection = DriverManager.getConnection(url);
       } catch (Exception e) {
-        System.out.println(e.getMessage());
+        System.out.println("Exception: " + e.getMessage());
       }
     }
     return instance;
@@ -51,12 +51,13 @@ public class ProductRepository {
         products.add(p);
       }
     } catch (Exception e) {
-        System.out.println(e.getMessage());
+        System.out.println("Exception: " + e.getMessage());
     }
     return products;
   }
 
   public void save(Product product) {
+    System.out.println("INSERT product...");
     System.out.println(product);
 
     String sql = "insert into products "
@@ -75,7 +76,7 @@ public class ProductRepository {
 
       st.executeUpdate();
     } catch (Exception e) {
-        System.out.println(e.getMessage());
+        System.out.println("Exception: " + e.getMessage());
     }
   }
 
@@ -97,7 +98,7 @@ public class ProductRepository {
         System.out.println(p);
       }
     } catch (Exception e) {
-        System.out.println(e.getMessage());
+        System.out.println("Exception: " + e.getMessage());
     }
     return p;
   }
@@ -109,11 +110,64 @@ public class ProductRepository {
       st.setLong(1, id);
       st.executeUpdate();
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      System.out.println("Exception: " + e.getMessage());
     }
   }
 
   public void update(Long id, Product product) {
-    //TODO: implement update - UPSERT on DB is locking ??
+    System.out.println("UPDATE product...");
+    System.out.println(product);
+
+    String sql = "update products "
+        + " set title=?, description=?, image_url=?,"
+        + "     price=?, created_at=?, updated_at=?"
+        + " where id=?";
+    try {
+      PreparedStatement st = dbConnection.prepareStatement(sql);
+      Product oldProduct = findById(id);
+
+      if( product.getTitle() != null) {
+        st.setString(    1, product.getTitle());
+      } else {
+        st.setString(    1, oldProduct.getTitle());
+      }
+
+      if( product.getDescription() != null) {
+        st.setString(    2, product.getDescription());
+      } else {
+        st.setString(    2, oldProduct.getDescription());
+      }
+
+      if( product.getImage_url() != null) {
+        st.setString(    3, product.getImage_url());
+      } else {
+        st.setString(    3, oldProduct.getImage_url());
+      }
+
+      if( product.getPrice() != null) {
+        st.setBigDecimal(4, product.getPrice());
+      } else {
+        st.setBigDecimal(4, oldProduct.getPrice());
+      }
+
+      if( product.getCreated_at() != null) {
+        st.setTimestamp( 5, product.getCreated_at());
+      } else {
+        st.setTimestamp( 5, oldProduct.getCreated_at());
+      }
+
+      if( product.getUpdated_at() != null) {
+        st.setTimestamp( 6, product.getUpdated_at());
+      } else {
+        st.setTimestamp( 6, oldProduct.getUpdated_at());
+      }
+
+      // setting WHERE clause
+      st.setLong(      7, product.getId());
+
+      st.executeUpdate();
+    } catch (Exception e) {
+      System.out.println("Exception: " + e.getMessage());
+    }
   }
 }

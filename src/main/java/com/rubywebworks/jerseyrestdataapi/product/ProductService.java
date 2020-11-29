@@ -34,8 +34,13 @@ public class ProductService {
     return productRepository.findById(id);
   }
 
+  // this UPDATE method acts like an UPSERT (INSERT if record not found)
   public void updateProduct(Long id, Product product) {
-    productRepository.update(id, product);
+    if( productRepository.findById(id) == null ) {
+      addProduct(product);
+    } else {
+      productRepository.update(id, product);
+    }
   }
 
   public void deleteProduct(Long id) {
