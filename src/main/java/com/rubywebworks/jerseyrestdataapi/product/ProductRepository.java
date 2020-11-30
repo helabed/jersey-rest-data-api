@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.rubywebworks.jerseyrestdataapi.JerseyRestDataApiApplication;
+
 public class ProductRepository {
   /**
    *  This product repository is designed for JDBC access to this table below as
@@ -41,11 +43,12 @@ Referenced by:
 
   public static ProductRepository getInstance() {
     if (instance == null) {
-      // Create the instance
+      // Create this class's only instance
       instance = new ProductRepository();
-      String url = "jdbc:postgresql://localhost:5432/depot_development";
+      String url = JerseyRestDataApiApplication.databaseUrl;
+      String driver = JerseyRestDataApiApplication.databaseDriverClass;
       try {
-        Class.forName("org.postgresql.Driver");
+        Class.forName(driver); //load the JDBC driver.
         dbConnection = DriverManager.getConnection(url);
       } catch (Exception e) {
         System.out.println("Exception: " + e.getMessage());
