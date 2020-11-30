@@ -11,6 +11,25 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ProductRepository {
+  /**
+   *  This product repository is designed for JDBC access to this table below as
+   *  defined in a PostgreSQL database.
+   *
+   Column    |              Type              | Collation | Nullable |               Default
+-------------+--------------------------------+-----------+----------+--------------------------------------
+ id          | bigint                         |           | not null | nextval('products_id_seq'::regclass)
+ title       | character varying              |           |          |
+ description | text                           |           |          |
+ image_url   | character varying              |           |          |
+ price       | numeric(8,2)                   |           |          |
+ created_at  | timestamp(6) without time zone |           | not null |
+ updated_at  | timestamp(6) without time zone |           | not null |
+Indexes:
+    "products_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "line_items" CONSTRAINT "fk_rails_11e15d5c6b" FOREIGN KEY (product_id) REFERENCES products(id)
+   *
+   */
 
   private static ProductRepository instance;
   private static Connection dbConnection;
@@ -69,20 +88,21 @@ public class ProductRepository {
 
     PreparedStatement st = null;
     String sql = "insert into products "
-        + " (id, title, description, image_url, price, created_at, updated_at)"
-        + " values (?,?,?,?,?,?,?)";
+        + " (title, description, image_url, price, created_at, updated_at)"
+        + " values (?,?,?,?,?,?)";
     try {
       st = dbConnection.prepareStatement(sql);
 
-      st.setLong(      1, product.getId());
-      st.setString(    2, product.getTitle());
-      st.setString(    3, product.getDescription());
-      st.setString(    4, product.getImage_url());
-      st.setBigDecimal(5, product.getPrice());
+      // no need to insert 'id' because it is auto-incremented on the DB by default.
+      // the 'id' field defaults to:  "nextval('products_id_seq'::regclass)"
+      st.setString(    1, product.getTitle());
+      st.setString(    2, product.getDescription());
+      st.setString(    3, product.getImage_url());
+      st.setBigDecimal(4, product.getPrice());
       Timestamp ts = new Timestamp(new Date().getTime());
 
+      st.setTimestamp( 5, ts);
       st.setTimestamp( 6, ts);
-      st.setTimestamp( 7, ts);
 
       st.executeUpdate();
     } catch (Exception e) {
