@@ -39,6 +39,7 @@ public class JerseyRestDataApiApplication {
   public static String databaseDriverClass = null;
   public static String databaseUsername = null;
   public static String databasePassword = null;
+  public static int    serverPort = 8080; //default
 
   public static void main(String[] args) {
     setLoggingLevel();
@@ -51,7 +52,7 @@ public class JerseyRestDataApiApplication {
 
     jettyContext.setContextPath("/");
 
-    Server jettyServer = new Server(8080);
+    Server jettyServer = new Server(serverPort);
     jettyServer.setHandler(jettyContext);
 
     ServletHolder jerseyServlet = jettyContext.addServlet(ServletContainer.class, "/api/*");
@@ -173,6 +174,7 @@ public class JerseyRestDataApiApplication {
         databaseDriverClass = consume(appProperties, "database.driver.class");
         databaseUsername = consume(appProperties, "database.username");
         databasePassword = consume(appProperties, "database.password");
+        serverPort       = consumeInt(appProperties, "server.port");
 
         resultCode = true;
       } catch (IOException e) {
