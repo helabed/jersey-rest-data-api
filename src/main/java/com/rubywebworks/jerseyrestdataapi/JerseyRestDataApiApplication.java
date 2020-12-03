@@ -130,12 +130,14 @@ public class JerseyRestDataApiApplication {
         if (debugging) {
 
           // Also dump any additional properties
+          System.out.println("------------------unused application.properties-------------------");
           Enumeration<Object> keys = appProperties.keys();
           while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
             String value = appProperties.getProperty(key);
             trace("(App Property) " + key + " = " + value);
           }
+          System.out.println("------------------unused application.properties-------------------");
         }
       } else {
         throw new Exception("loadConfig() returned false !!");
